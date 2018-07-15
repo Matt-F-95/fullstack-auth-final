@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from 'axios';
+import { setToken } from '../services/tokenService';
 
 class Login extends Component {
   state = {
@@ -8,9 +10,17 @@ class Login extends Component {
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
-    console.log("submitted!");
+    const { email, password } = this.state;
+
+    try {
+      const res = await axios.post('/auth/signup', {email,password});
+      setToken(res.data.token);
+      this.props.setUser(res.data);
+    } catch(e) {
+      console.error(e);
+    }
   };
   render() {
     return (

@@ -11,10 +11,17 @@ class Login extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
     const { email, password } = this.state;
     // 1. POST to /auth/login, passing in the email and password in the body
+    try {
+      const res = await axios.post('/auth/login',{email,password});
+      setToken(res.data.token);
+      this.props.getCurrentUser();
+    } catch(e) {
+      console.error(e);
+    }
     // 2. If we receive a successful response:
     //  - grab the token from the response
     //  - store it in local storage
